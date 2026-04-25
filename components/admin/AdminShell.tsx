@@ -28,9 +28,9 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
                 href="/admin"
                 className="font-mono text-sm font-semibold uppercase tracking-[0.2em]"
               >
-                Downloader-Bot
+                MaxLoad
               </Link>
-              <div className="text-xs text-zinc-500">admin console</div>
+              <div className="text-xs text-zinc-500">Admin</div>
             </div>
           </div>
           <div className="flex flex-wrap items-center justify-end gap-3">

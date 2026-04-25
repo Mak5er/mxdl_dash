@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: {
-    default: "Admin",
-    template: "%s | MaxLoad Admin",
+    default: "MaxLoad | Admin",
+    template: "%s | MaxLoad | Admin",
   },
   description: "Private MaxLoad operations console.",
   robots: {

@@ -13,7 +13,9 @@ import { getAdminStats } from "@/lib/queries/admin-stats";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "Console",
+  title: {
+    absolute: "MaxLoad | Admin",
+  },
   description: "Private MaxLoad operations overview.",
 };
 

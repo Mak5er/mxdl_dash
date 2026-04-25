@@ -20,7 +20,9 @@ import { getPublicStats } from "@/lib/queries/public-stats";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "Telegram Downloads",
+  title: {
+    absolute: "MaxLoad",
+  },
   description:
     "Open MaxLoad in Telegram, send a media link, and watch aggregate service stats update as the bot works.",
   alternates: {

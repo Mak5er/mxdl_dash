@@ -12,7 +12,7 @@ export function PublicShell({ children }: { children: React.ReactNode }) {
       <header className="border-b border-white/10 bg-black/90">
         <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-3 px-4 py-3 sm:px-6 lg:px-8">
           <Link href="/" className="font-mono text-sm font-semibold uppercase tracking-[0.2em]">
-            Downloader-Bot
+            MaxLoad
           </Link>
           <nav className="flex flex-wrap items-center justify-end gap-2">
             <RefreshControl

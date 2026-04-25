@@ -31,7 +31,7 @@ export const metadata: Metadata = {
   metadataBase: getMetadataBase(),
   applicationName: "MaxLoad",
   title: {
-    default: "MaxLoad | Telegram Downloads",
+    default: "MaxLoad",
     template: "%s | MaxLoad",
   },
   description:
@@ -53,7 +53,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     siteName: "MaxLoad",
-    title: "MaxLoad | Telegram Downloads",
+    title: "MaxLoad",
     description:
       "A fast Telegram download flow with live public service stats.",
     images: [
@@ -67,7 +67,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "MaxLoad | Telegram Downloads",
+    title: "MaxLoad",
     description:
       "A fast Telegram download flow with live public service stats.",
     images: ["/maxload-hero.svg"],
