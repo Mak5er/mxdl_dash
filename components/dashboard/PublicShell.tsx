@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { GitBranch } from "lucide-react";
 import { RefreshControl } from "@/components/dashboard/RefreshControl";
-import { StatusPill } from "@/components/ui/StatusPill";
 
 export function PublicShell({ children }: { children: React.ReactNode }) {
   const refreshInterval = Number(process.env.PUBLIC_DASHBOARD_AUTO_REFRESH_SECONDS ?? 30);
@@ -18,7 +17,6 @@ export function PublicShell({ children }: { children: React.ReactNode }) {
             <RefreshControl
               intervalSeconds={Number.isFinite(refreshInterval) && refreshInterval > 0 ? refreshInterval : 30}
             />
-            <StatusPill className="h-8 px-2 text-[10px] tracking-[0.12em]">Live</StatusPill>
             <a
               className="inline-flex h-8 w-8 items-center justify-center border border-white/10 bg-zinc-950/50 text-zinc-500 transition hover:border-white/30 hover:text-white"
               href="https://github.com/Mak5er/Downloader-Bot"

@@ -35,7 +35,7 @@ export const metadata: Metadata = {
     template: "%s | MaxLoad",
   },
   description:
-    "Telegram media downloads with a quiet live dashboard for service activity, file types, and delivery health.",
+    "Send a TikTok, Instagram, YouTube, SoundCloud, Pinterest, or X link to MaxLoad and get the file back in Telegram.",
   keywords: [
     "MaxLoad",
     "Telegram bot",
@@ -55,7 +55,7 @@ export const metadata: Metadata = {
     siteName: "MaxLoad",
     title: "MaxLoad",
     description:
-      "A fast Telegram download flow with live public service stats.",
+      "Send a social media link to MaxLoad and get the file back in Telegram.",
     images: [
       {
         url: "/maxload-hero.svg",
@@ -69,7 +69,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "MaxLoad",
     description:
-      "A fast Telegram download flow with live public service stats.",
+      "Send a social media link to MaxLoad and get the file back in Telegram.",
     images: ["/maxload-hero.svg"],
   },
 };

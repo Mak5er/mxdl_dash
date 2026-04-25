@@ -40,6 +40,51 @@ export function formatDate(value: string | Date | null | undefined) {
   }).format(date);
 }
 
+export function formatChartDateLabel(value: string) {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) {
+    return value;
+  }
+
+  return formatDate(value);
+}
+
+export function formatActionLabel(value: string | null | undefined) {
+  if (!value || value.trim().length === 0) {
+    return "Not available";
+  }
+
+  const tokenLabels: Record<string, string> = {
+    ai: "AI",
+    audio: "Audio",
+    clip: "Clip",
+    download: "Download",
+    facebook: "Facebook",
+    file: "File",
+    help: "Help",
+    instagram: "Instagram",
+    message: "Message",
+    post: "Post",
+    reel: "Reel",
+    shorts: "Shorts",
+    soundcloud: "SoundCloud",
+    start: "Start",
+    story: "Story",
+    text: "Text",
+    tiktok: "TikTok",
+    video: "Video",
+    youtube: "YouTube",
+  };
+
+  return value
+    .split(/[_\-\s]+/)
+    .filter(Boolean)
+    .map((token) => {
+      const normalized = token.toLowerCase();
+      return tokenLabels[normalized] ?? `${normalized.charAt(0).toUpperCase()}${normalized.slice(1)}`;
+    })
+    .join(" ");
+}
+
 export function truncateMiddle(value: string, maxLength = 68) {
   if (value.length <= maxLength) {
     return value;
@@ -56,4 +101,3 @@ export function nullLabel(value: string | null | undefined) {
 
   return value;
 }
-

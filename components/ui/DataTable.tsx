@@ -26,8 +26,8 @@ export function DataTable({
 }: DataTableProps) {
   return (
     <div className="min-w-0 overflow-hidden border border-white/10 bg-black">
-      <div className="overflow-x-auto">
-        <table className="w-full min-w-[760px] text-left text-sm">
+      <div className="overflow-x-auto [-webkit-overflow-scrolling:touch]">
+        <table className="w-full min-w-[640px] text-left text-sm sm:min-w-[760px]">
           <thead className="border-b border-white/10 bg-zinc-950 font-mono text-[11px] uppercase tracking-[0.16em] text-zinc-500">
             <tr>
               {columns.map((column, index) => (

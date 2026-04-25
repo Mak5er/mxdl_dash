@@ -23,9 +23,8 @@ export function MetricCard({
       <div className="font-mono text-[11px] uppercase tracking-[0.18em] text-zinc-500">
         {label}
       </div>
-      <div className="mt-3 text-3xl font-semibold text-white">{value}</div>
+      <div className="mt-3 text-2xl font-semibold text-white sm:text-3xl">{value}</div>
       {detail ? <div className="mt-2 text-sm text-zinc-500">{detail}</div> : null}
     </div>
   );
 }
-

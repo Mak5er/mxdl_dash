@@ -1,6 +1,7 @@
 "use client";
 
 import { useId, useState } from "react";
+import { formatChartDateLabel } from "@/lib/format";
 
 type Point = {
   label: string;
@@ -71,7 +72,7 @@ export function LineMetricChart({ data }: { data: Point[] }) {
 
   return (
     <svg
-      className="h-64 w-full overflow-visible"
+      className="h-56 w-full overflow-visible sm:h-64"
       viewBox={`0 0 ${width} ${height}`}
       role="img"
       aria-label="Line chart"
@@ -95,7 +96,7 @@ export function LineMetricChart({ data }: { data: Point[] }) {
       {points.length === 1 ? <circle cx={points[0].x} cy={points[0].y} r="4" fill="#229ED9" /> : null}
       {xLabels.map((point) => (
         <text key={`${point.label}-${point.x}`} x={point.x} y={height - 14} textAnchor="middle" className="fill-zinc-500 text-[11px]">
-          {point.label.slice(5)}
+          {formatChartDateLabel(point.label)}
         </text>
       ))}
       {points.map((point, index) => {
@@ -130,7 +131,7 @@ export function LineMetricChart({ data }: { data: Point[] }) {
           <g transform={`translate(${tooltipX} ${tooltipY})`}>
             <rect width={tooltipWidth} height={tooltipHeight} fill="#050505" stroke="rgba(255,255,255,0.18)" />
             <text x="12" y="21" className="fill-zinc-400 text-[11px]">
-              {activePoint.label}
+              {formatChartDateLabel(activePoint.label)}
             </text>
             <text x="12" y="41" className="fill-white text-[16px] font-semibold">
               {activePoint.count.toLocaleString("en")}
@@ -157,9 +158,12 @@ export function BarMetricChart({ data }: { data: Point[] }) {
   const max = getMax(rows);
 
   return (
-    <div className="flex h-64 flex-col justify-center gap-3">
+    <div className="flex h-56 flex-col justify-center gap-3 sm:h-64">
       {rows.map((point, index) => (
-        <div key={point.label} className="grid grid-cols-[minmax(6rem,11rem)_1fr_3.5rem] items-center gap-3">
+        <div
+          key={point.label}
+          className="grid grid-cols-[minmax(4.5rem,7rem)_1fr_3rem] items-center gap-2 sm:grid-cols-[minmax(6rem,11rem)_1fr_3.5rem] sm:gap-3"
+        >
           <div className="truncate font-mono text-[11px] uppercase tracking-[0.12em] text-zinc-500" title={point.label}>
             {shortLabel(point.label)}
           </div>
@@ -203,8 +207,8 @@ export function DonutMetricChart({ data }: { data: Point[] }) {
   });
 
   return (
-    <div className="grid h-64 min-w-0 items-center gap-4 sm:grid-cols-[15rem_1fr]">
-      <svg className="mx-auto h-56 w-56" viewBox="0 0 200 200" role="img" aria-label="Donut chart">
+    <div className="grid h-56 min-w-0 items-center gap-4 sm:h-64 sm:grid-cols-[15rem_1fr]">
+      <svg className="mx-auto h-44 w-44 sm:h-56 sm:w-56" viewBox="0 0 200 200" role="img" aria-label="Donut chart">
         <circle cx="100" cy="100" r={radius} fill="none" stroke="rgba(255,255,255,0.08)" strokeWidth="24" />
         {segments.map((point, index) => {
           return (

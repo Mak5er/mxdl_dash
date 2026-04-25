@@ -18,8 +18,8 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
     <main className="min-h-screen bg-black text-zinc-100">
       <div className="fixed inset-0 -z-10 bg-[linear-gradient(rgba(255,255,255,0.035)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.035)_1px,transparent_1px)] bg-[size:44px_44px]" />
       <header className="border-b border-white/10 bg-black/90">
-        <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-4 px-4 py-4 sm:px-6 lg:px-8">
-          <div className="flex items-center gap-3">
+        <div className="mx-auto flex max-w-7xl flex-wrap items-start justify-between gap-4 px-4 py-4 sm:items-center sm:px-6 lg:px-8">
+          <div className="flex min-w-0 items-center gap-3">
             <span className="inline-flex h-9 w-9 items-center justify-center border border-white/10 bg-white text-black">
               <Database className="h-4 w-4" />
             </span>
@@ -33,7 +33,7 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
               <div className="text-xs text-zinc-500">Admin</div>
             </div>
           </div>
-          <div className="flex flex-wrap items-center justify-end gap-3">
+          <div className="flex w-full flex-wrap items-center justify-start gap-3 sm:w-auto sm:justify-end">
             <RefreshControl
               intervalSeconds={Number.isFinite(refreshInterval) && refreshInterval > 0 ? refreshInterval : 10}
             />
