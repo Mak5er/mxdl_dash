@@ -126,9 +126,8 @@ psql "$DATABASE_URL" -f docs/recommended-indexes.sql
 
 ## Favicon Options
 
-The active app icon lives at `app/icon.svg`. Five draft variants are available
-in `public/favicon-options/` so the final mark can be swapped quickly before
-launch.
+The active app icon lives at `app/icon.svg`. The selected source variant is
+kept at `public/favicon-options/maxload-icon-09.svg`.
 
 Current schema limitations are handled explicitly:
 
