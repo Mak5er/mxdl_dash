@@ -178,9 +178,7 @@ For a tunnel or reverse-proxy setup:
 ## Project Assets
 
 - Active app icon: `app/icon.svg`
-- Selected favicon source: `public/favicon-options/maxload-icon-09.svg`
 - Public hero art: `public/maxload-hero.svg`
-- Service worker placeholder: `public/sw.js`
 
 ## Troubleshooting
 
