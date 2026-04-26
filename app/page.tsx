@@ -16,28 +16,57 @@ import { BarMetricChart, DonutMetricChart, LineMetricChart } from "@/components/
 import { PublicShell } from "@/components/dashboard/PublicShell";
 import { formatActionLabel, formatNumber } from "@/lib/format";
 import { getPublicStats } from "@/lib/queries/public-stats";
+import {
+  botHandle,
+  botUrl,
+  defaultDescription,
+  defaultTitle,
+  getAbsoluteUrl,
+  githubIssuesUrl,
+  githubRepositoryUrl,
+  jsonLd,
+  plainDescription,
+  siteName,
+  supportUrl,
+  supportedPlatforms,
+} from "@/lib/seo";
 
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: {
-    absolute: "MaxLoad",
+    absolute: defaultTitle,
   },
-  description:
-    "Send a social media link to MaxLoad and get the file back in Telegram.",
+  description: defaultDescription,
   alternates: {
     canonical: "/",
   },
+  openGraph: {
+    title: defaultTitle,
+    description: defaultDescription,
+    url: "/",
+    images: [
+      {
+        url: "/opengraph-image",
+        width: 1200,
+        height: 630,
+        alt: "MaxLoad Telegram downloader bot",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: defaultTitle,
+    description: defaultDescription,
+    images: ["/opengraph-image"],
+  },
 };
-
-const botHandle = "MaxLoadBot";
-const botUrl = `https://t.me/${botHandle}`;
 
 const steps = [
   {
     icon: MessageCircle,
     title: "Send a link",
-    text: "Paste a video or audio link into Telegram.",
+    text: "Paste a supported video, audio, or post link into Telegram.",
   },
   {
     icon: Gauge,
@@ -53,23 +82,52 @@ const steps = [
 
 const proofPoints = [
   {
-    title: "Private or group",
-    text: "Use it alone or add it to a chat.",
+    title: "Private chat",
+    text: "Use the bot one-on-one when you want a quick download.",
   },
   {
-    title: "Many sources",
-    text: "TikTok, Instagram, YouTube, and more.",
+    title: "Group friendly",
+    text: "Add it to a group so everyone can send supported links.",
   },
   {
-    title: "Simple settings",
-    text: "Choose captions, buttons, and cleanup options.",
+    title: "Simple controls",
+    text: "Change captions, buttons, audio options, and cleanup settings.",
   },
 ];
 
-const platformChips = ["TikTok", "Instagram", "YouTube", "SoundCloud", "Pinterest", "X"];
-const supportUrl = "https://t.me/mak5er";
+const platformCards = [
+  {
+    title: "TikTok videos",
+    text: "Send a TikTok link and get the video back in Telegram.",
+  },
+  {
+    title: "Instagram reels and posts",
+    text: "Use Instagram links when you want to save a reel or post.",
+  },
+  {
+    title: "YouTube videos",
+    text: "Paste a YouTube link and let the bot handle the download flow.",
+  },
+  {
+    title: "SoundCloud tracks",
+    text: "Send a SoundCloud link when you need the audio in chat.",
+  },
+  {
+    title: "Pinterest pins",
+    text: "Use Pinterest links without leaving Telegram.",
+  },
+  {
+    title: "X / Twitter posts",
+    text: "Send a post link and get the media back where you are chatting.",
+  },
+];
 
 const faqItems = [
+  {
+    question: "What is MaxLoad?",
+    answer:
+      "MaxLoad is a Telegram bot that downloads videos, audio, and posts from supported links you send.",
+  },
   {
     question: "What links can I send?",
     answer:
@@ -81,6 +139,16 @@ const faqItems = [
       "Yes. You can use MaxLoad in a private chat, group chat, or inline mode.",
   },
   {
+    question: "Do I need to install another app?",
+    answer:
+      "No. Open the bot in Telegram, send a link, and wait for the file in the same chat.",
+  },
+  {
+    question: "Can MaxLoad download audio?",
+    answer:
+      "Yes. SoundCloud is supported, and the bot settings include MP3 options when they are available for a link.",
+  },
+  {
     question: "Can I change the bot settings?",
     answer:
       "Yes. Open the bot settings to change captions, buttons, MP3 options, and auto-delete.",
@@ -90,9 +158,89 @@ const faqItems = [
     answer:
       "No. It shows only totals, not who downloaded what.",
   },
+  {
+    question: "Where do I report a broken source?",
+    answer:
+      "Message @mak5er on Telegram or open an issue on GitHub with the source that failed.",
+  },
 ];
 
-const githubIssuesUrl = "https://github.com/Mak5er/Downloader-Bot/issues";
+const pageUrl = getAbsoluteUrl("/");
+const imageUrl = getAbsoluteUrl("/opengraph-image");
+const structuredData = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebSite",
+      "@id": pageUrl ? `${pageUrl}#website` : "#website",
+      name: siteName,
+      url: pageUrl,
+      description: defaultDescription,
+      inLanguage: "en",
+      sameAs: [botUrl, githubRepositoryUrl],
+    },
+    {
+      "@type": "SoftwareApplication",
+      "@id": pageUrl ? `${pageUrl}#app` : "#app",
+      name: `${siteName} Telegram Bot`,
+      alternateName: siteName,
+      applicationCategory: "UtilitiesApplication",
+      operatingSystem: "Telegram",
+      description: plainDescription,
+      url: pageUrl,
+      sameAs: [botUrl, githubRepositoryUrl],
+      potentialAction: {
+        "@type": "UseAction",
+        name: `Open @${botHandle}`,
+        target: botUrl,
+      },
+    },
+    {
+      "@type": "WebPage",
+      "@id": pageUrl ? `${pageUrl}#webpage` : "#webpage",
+      url: pageUrl,
+      name: defaultTitle,
+      description: defaultDescription,
+      isPartOf: {
+        "@id": pageUrl ? `${pageUrl}#website` : "#website",
+      },
+      about: {
+        "@id": pageUrl ? `${pageUrl}#app` : "#app",
+      },
+      primaryImageOfPage: imageUrl
+        ? {
+            "@type": "ImageObject",
+            url: imageUrl,
+          }
+        : undefined,
+      inLanguage: "en",
+    },
+    {
+      "@type": "FAQPage",
+      "@id": pageUrl ? `${pageUrl}#faq` : "#faq",
+      mainEntity: faqItems.map((item) => ({
+        "@type": "Question",
+        name: item.question,
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: item.answer,
+        },
+      })),
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": pageUrl ? `${pageUrl}#breadcrumbs` : "#breadcrumbs",
+      itemListElement: [
+        {
+          "@type": "ListItem",
+          position: 1,
+          name: siteName,
+          item: pageUrl,
+        },
+      ],
+    },
+  ],
+};
 
 export default async function PublicDashboardPage() {
   let stats;
@@ -105,7 +253,12 @@ export default async function PublicDashboardPage() {
   }
 
   return (
-    <PublicShell>
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: jsonLd(structuredData) }}
+      />
+      <PublicShell>
       <section className="relative isolate overflow-hidden border-b border-white/10">
         <div className="absolute inset-0 -z-20 bg-black" />
         <Image
@@ -127,7 +280,7 @@ export default async function PublicDashboardPage() {
               MaxLoad
             </h1>
             <p className="mt-5 max-w-2xl text-base leading-7 text-zinc-300 sm:text-xl sm:leading-8">
-              Send a social media link and get the file back in Telegram.
+              {plainDescription}
             </p>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
               <a
@@ -148,7 +301,7 @@ export default async function PublicDashboardPage() {
               </a>
             </div>
             <div className="mt-5 flex flex-wrap gap-2">
-              {platformChips.map((platform) => (
+              {supportedPlatforms.map((platform) => (
                 <span
                   key={platform}
                   className="border border-white/10 bg-black/50 px-3 py-2 text-sm text-zinc-300"
@@ -208,6 +361,29 @@ export default async function PublicDashboardPage() {
               </div>
             </div>
           </div>
+        </div>
+      </section>
+
+      <section className="mx-auto grid max-w-7xl gap-8 px-4 py-12 sm:px-6 lg:grid-cols-[0.7fr_1fr] lg:px-8">
+        <div>
+          <div className="font-mono text-xs uppercase tracking-[0.2em] text-zinc-500">
+            what it does
+          </div>
+          <h2 className="mt-3 max-w-xl text-3xl font-semibold text-white sm:text-4xl">
+            Download supported media without leaving Telegram.
+          </h2>
+          <p className="mt-4 max-w-xl text-zinc-400">
+            Paste a link, keep chatting, and let MaxLoad send the file back to the same
+            place. No extra app, no messy steps, just the bot and your Telegram chat.
+          </p>
+        </div>
+        <div className="grid gap-px border border-white/10 bg-white/10 md:grid-cols-2">
+          {platformCards.map((platform) => (
+            <div key={platform.title} className="bg-black p-5">
+              <h3 className="text-lg font-semibold text-white">{platform.title}</h3>
+              <p className="mt-3 text-sm leading-6 text-zinc-500">{platform.text}</p>
+            </div>
+          ))}
         </div>
       </section>
 
@@ -337,7 +513,9 @@ export default async function PublicDashboardPage() {
             <div className="font-mono text-[11px] uppercase tracking-[0.18em] text-zinc-500">
               ready
             </div>
-            <div className="mt-2 text-xl font-semibold text-white">Try a link in @{botHandle} and see the flow for yourself.</div>
+            <div className="mt-2 text-xl font-semibold text-white">
+              Try a link in @{botHandle} and see the flow for yourself.
+            </div>
           </div>
           <div className="flex flex-wrap gap-2">
             <a
@@ -352,6 +530,7 @@ export default async function PublicDashboardPage() {
           </div>
         </div>
       </section>
-    </PublicShell>
+      </PublicShell>
+    </>
   );
 }

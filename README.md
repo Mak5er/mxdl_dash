@@ -12,6 +12,8 @@ operating the service.
 
 - Public landing page with live totals, charts, FAQ, support links, and
   human-friendly copy.
+- SEO-ready public surface with canonical metadata, Open Graph/Twitter cards,
+  JSON-LD, sitemap, robots rules, web manifest, and `llms.txt`.
 - Private `/admin` console protected by `ADMIN_TOKEN` and a signed HTTP-only
   session cookie.
 - Admin views for users, downloads, analytics events, and individual user
@@ -104,9 +106,10 @@ For Neon or other managed PostgreSQL providers, keep SSL options in the URL:
 DATABASE_URL="postgresql://user:password@host/neondb?sslmode=require"
 ```
 
-`DASHBOARD_PUBLIC_URL` is used for metadata and for local tunnel hostnames in
-Next dev. If you expose `npm run dev` through localhost.run, Cloudflare Tunnel,
-ngrok, or another hostname, set this value and restart the dev server.
+`DASHBOARD_PUBLIC_URL` is used for canonical metadata, sitemap, robots output,
+JSON-LD, and local tunnel hostnames in Next dev. If you expose `npm run dev`
+through localhost.run, Cloudflare Tunnel, ngrok, or another hostname, set this
+value and restart the dev server.
 
 ## Scripts
 

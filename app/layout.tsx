@@ -1,21 +1,13 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import {
+  defaultDescription,
+  defaultTitle,
+  getPublicBaseUrl,
+  seoKeywords,
+  siteName,
+} from "@/lib/seo";
 import "./globals.css";
-
-function getMetadataBase() {
-  const value = process.env.DASHBOARD_PUBLIC_URL?.trim();
-  if (!value) {
-    return undefined;
-  }
-
-  const normalizedValue = /^https?:\/\//i.test(value) ? value : `https://${value}`;
-
-  try {
-    return new URL(normalizedValue);
-  } catch {
-    return undefined;
-  }
-}
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -28,50 +20,73 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  metadataBase: getMetadataBase(),
-  applicationName: "MaxLoad",
+  metadataBase: getPublicBaseUrl(),
+  applicationName: siteName,
   title: {
-    default: "MaxLoad",
-    template: "%s | MaxLoad",
+    default: defaultTitle,
+    template: `%s | ${siteName}`,
   },
-  description:
-    "Send a TikTok, Instagram, YouTube, SoundCloud, Pinterest, or X link to MaxLoad and get the file back in Telegram.",
-  keywords: [
-    "MaxLoad",
-    "Telegram bot",
-    "Telegram downloader",
-    "media downloads",
-    "download dashboard",
-  ],
-  authors: [{ name: "Mak5er" }],
+  description: defaultDescription,
+  keywords: seoKeywords,
+  authors: [{ name: "Mak5er", url: "https://github.com/Mak5er" }],
   creator: "Mak5er",
   publisher: "Mak5er",
+  category: "utility",
+  classification: "Telegram bot, media downloader, public dashboard",
+  referrer: "strict-origin-when-cross-origin",
+  alternates: {
+    canonical: "/",
+  },
+  icons: {
+    icon: [{ url: "/icon.svg", type: "image/svg+xml" }],
+    apple: [{ url: "/icon.svg", type: "image/svg+xml" }],
+  },
+  manifest: "/manifest.webmanifest",
+  formatDetection: {
+    address: false,
+    email: false,
+    telephone: false,
+  },
   robots: {
     index: true,
     follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+      "max-video-preview": -1,
+    },
   },
   openGraph: {
     type: "website",
-    siteName: "MaxLoad",
-    title: "MaxLoad",
-    description:
-      "Send a social media link to MaxLoad and get the file back in Telegram.",
+    siteName,
+    title: defaultTitle,
+    description: defaultDescription,
+    url: "/",
+    locale: "en_US",
     images: [
       {
-        url: "/maxload-hero.svg",
+        url: "/opengraph-image",
         width: 1200,
         height: 630,
-        alt: "MaxLoad Telegram download dashboard",
+        alt: "MaxLoad Telegram downloader bot",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "MaxLoad",
-    description:
-      "Send a social media link to MaxLoad and get the file back in Telegram.",
-    images: ["/maxload-hero.svg"],
+    title: defaultTitle,
+    description: defaultDescription,
+    images: ["/opengraph-image"],
   },
+};
+
+export const viewport: Viewport = {
+  colorScheme: "dark",
+  themeColor: "#000000",
+  width: "device-width",
+  initialScale: 1,
 };
 
 export default function RootLayout({
