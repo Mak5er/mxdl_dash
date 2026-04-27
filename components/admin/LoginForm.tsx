@@ -38,16 +38,16 @@ export function LoginForm() {
       }}
     >
       <label className="block">
-        <span className="font-mono text-[11px] uppercase tracking-[0.16em] text-zinc-500">
+        <span className="font-mono text-sm uppercase tracking-[0.16em] text-zinc-500">
           Admin token
         </span>
         <input
-          className="mt-2 w-full border border-white/10 bg-black px-3 py-3 font-mono text-sm text-white outline-none placeholder:text-zinc-700 focus:border-white/40"
+          className="mt-2 min-h-11 w-full border border-white/10 bg-black px-3 py-3 font-mono text-base text-white outline-none placeholder:text-zinc-700 focus:border-white/40 sm:text-sm"
           type="password"
           autoComplete="current-password"
           value={token}
           onChange={(event) => setToken(event.target.value)}
-          placeholder="paste ADMIN_TOKEN"
+          placeholder="paste admin token"
           required
         />
       </label>
@@ -55,11 +55,10 @@ export function LoginForm() {
       <button
         type="submit"
         disabled={loading}
-        className="w-full border border-white bg-white px-4 py-3 text-sm font-semibold text-black hover:bg-zinc-200 disabled:cursor-not-allowed disabled:opacity-60"
+        className="min-h-11 w-full border border-white bg-white px-4 py-3 text-sm font-semibold text-black hover:bg-zinc-200 disabled:cursor-not-allowed disabled:opacity-60"
       >
         {loading ? "Verifying..." : "Enter console"}
       </button>
     </form>
   );
 }
-

@@ -24,7 +24,7 @@ export default async function AdminLoginPage() {
           </div>
           <h1 className="mt-3 text-2xl font-semibold text-white">Enter the console.</h1>
           <p className="mt-2 text-sm text-zinc-500">
-            Use the private token from <span className="font-mono">ADMIN_TOKEN</span>.
+            Use the private admin token.
           </p>
         </div>
         <LoginForm />

@@ -18,7 +18,7 @@ export function PublicShell({ children }: { children: React.ReactNode }) {
               intervalSeconds={Number.isFinite(refreshInterval) && refreshInterval > 0 ? refreshInterval : 30}
             />
             <a
-              className="inline-flex h-8 w-8 items-center justify-center border border-white/10 bg-zinc-950/50 text-zinc-500 transition hover:border-white/30 hover:text-white"
+              className="inline-flex h-11 w-11 items-center justify-center border border-white/10 bg-zinc-950/50 text-zinc-500 transition hover:border-white/30 hover:text-white"
               href="https://github.com/Mak5er/Downloader-Bot"
               target="_blank"
               rel="noreferrer"

@@ -56,12 +56,12 @@ export default async function AdminDownloadsPage({ searchParams }: PageProps) {
           name="search"
           defaultValue={filters.search}
           placeholder="search URL"
-          className="border border-white/10 bg-black px-3 py-2 text-sm text-white outline-none placeholder:text-zinc-700 focus:border-white/40"
+          className="min-h-11 w-full border border-white/10 bg-black px-3 py-2 text-base text-white outline-none placeholder:text-zinc-700 focus:border-white/40 sm:text-sm"
         />
         <select
           name="fileType"
           defaultValue={filters.fileType ?? ""}
-          className="border border-white/10 bg-black px-3 py-2 text-sm text-white outline-none focus:border-white/40"
+          className="min-h-11 w-full border border-white/10 bg-black px-3 py-2 text-base text-white outline-none focus:border-white/40 sm:text-sm"
         >
           <option value="">file type</option>
           {options.fileTypes.map((value) => (
@@ -74,15 +74,15 @@ export default async function AdminDownloadsPage({ searchParams }: PageProps) {
           name="from"
           defaultValue={filters.from}
           type="date"
-          className="border border-white/10 bg-black px-3 py-2 text-sm text-white outline-none focus:border-white/40"
+          className="min-h-11 w-full border border-white/10 bg-black px-3 py-2 text-base text-white outline-none focus:border-white/40 sm:text-sm"
         />
         <input
           name="to"
           defaultValue={filters.to}
           type="date"
-          className="border border-white/10 bg-black px-3 py-2 text-sm text-white outline-none focus:border-white/40"
+          className="min-h-11 w-full border border-white/10 bg-black px-3 py-2 text-base text-white outline-none focus:border-white/40 sm:text-sm"
         />
-        <button className="border border-white bg-white px-3 py-2 text-sm font-semibold text-black hover:bg-zinc-200">
+        <button className="min-h-11 border border-white bg-white px-3 py-2 text-sm font-semibold text-black hover:bg-zinc-200">
           Apply
         </button>
       </form>
@@ -94,6 +94,21 @@ export default async function AdminDownloadsPage({ searchParams }: PageProps) {
       ) : null}
 
       <div className="mt-4">
+        <div className="mb-3 md:hidden">
+          <Pagination
+            total={data.total}
+            page={filters.page}
+            pageSize={filters.pageSize}
+            basePath="/admin/downloads"
+            searchParams={{
+              search: filters.search,
+              fileType: filters.fileType,
+              from: filters.from,
+              to: filters.to,
+              pageSize: filters.pageSize,
+            }}
+          />
+        </div>
         <DataTable
           columns={["ID", "URL", "File ID", "Type", "Added"]}
           rows={data.rows.map((download) => [

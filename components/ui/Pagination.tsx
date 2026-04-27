@@ -36,26 +36,26 @@ export function Pagination({
   const nextDisabled = page >= pages;
 
   return (
-    <div className="flex flex-wrap items-center justify-between gap-3 border-x border-b border-white/10 bg-zinc-950 px-4 py-3 text-sm text-zinc-500">
+    <div className="flex flex-wrap items-center justify-between gap-3 border border-white/10 bg-zinc-950 px-3 py-2.5 text-sm text-zinc-500 sm:px-4 sm:py-3">
       <span>
         Page {page} of {pages} / {total} rows
       </span>
       <div className="flex gap-2">
         {previousDisabled ? (
-          <span className="border border-white/10 px-3 py-1 text-zinc-700">Previous</span>
+          <span className="inline-flex min-h-11 items-center border border-white/10 px-3 py-1 text-zinc-700">Previous</span>
         ) : (
           <Link
-            className="border border-white/15 px-3 py-1 text-zinc-200 hover:bg-white hover:text-black"
+            className="inline-flex min-h-11 items-center border border-white/15 px-3 py-1 text-zinc-200 hover:bg-white hover:text-black"
             href={hrefFor(basePath, searchParams, page - 1)}
           >
             Previous
           </Link>
         )}
         {nextDisabled ? (
-          <span className="border border-white/10 px-3 py-1 text-zinc-700">Next</span>
+          <span className="inline-flex min-h-11 items-center border border-white/10 px-3 py-1 text-zinc-700">Next</span>
         ) : (
           <Link
-            className="border border-white/15 px-3 py-1 text-zinc-200 hover:bg-white hover:text-black"
+            className="inline-flex min-h-11 items-center border border-white/15 px-3 py-1 text-zinc-200 hover:bg-white hover:text-black"
             href={hrefFor(basePath, searchParams, page + 1)}
           >
             Next

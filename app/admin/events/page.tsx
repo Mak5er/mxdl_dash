@@ -56,12 +56,13 @@ export default async function AdminEventsPage({ searchParams }: PageProps) {
           name="userId"
           defaultValue={filters.userId}
           placeholder="user id"
-          className="border border-white/10 bg-black px-3 py-2 text-sm text-white outline-none placeholder:text-zinc-700 focus:border-white/40"
+          inputMode="numeric"
+          className="min-h-11 w-full border border-white/10 bg-black px-3 py-2 text-base text-white outline-none placeholder:text-zinc-700 focus:border-white/40 sm:text-sm"
         />
         <select
           name="actionName"
           defaultValue={filters.actionName ?? ""}
-          className="border border-white/10 bg-black px-3 py-2 text-sm text-white outline-none focus:border-white/40"
+          className="min-h-11 w-full border border-white/10 bg-black px-3 py-2 text-base text-white outline-none focus:border-white/40 sm:text-sm"
         >
           <option value="">action</option>
           {options.actionNames.map((value) => (
@@ -73,7 +74,7 @@ export default async function AdminEventsPage({ searchParams }: PageProps) {
         <select
           name="chatType"
           defaultValue={filters.chatType ?? ""}
-          className="border border-white/10 bg-black px-3 py-2 text-sm text-white outline-none focus:border-white/40"
+          className="min-h-11 w-full border border-white/10 bg-black px-3 py-2 text-base text-white outline-none focus:border-white/40 sm:text-sm"
         >
           <option value="">chat type</option>
           {options.chatTypes.map((value) => (
@@ -86,15 +87,15 @@ export default async function AdminEventsPage({ searchParams }: PageProps) {
           name="from"
           defaultValue={filters.from}
           type="date"
-          className="border border-white/10 bg-black px-3 py-2 text-sm text-white outline-none focus:border-white/40"
+          className="min-h-11 w-full border border-white/10 bg-black px-3 py-2 text-base text-white outline-none focus:border-white/40 sm:text-sm"
         />
         <input
           name="to"
           defaultValue={filters.to}
           type="date"
-          className="border border-white/10 bg-black px-3 py-2 text-sm text-white outline-none focus:border-white/40"
+          className="min-h-11 w-full border border-white/10 bg-black px-3 py-2 text-base text-white outline-none focus:border-white/40 sm:text-sm"
         />
-        <button className="border border-white bg-white px-3 py-2 text-sm font-semibold text-black hover:bg-zinc-200">
+        <button className="min-h-11 border border-white bg-white px-3 py-2 text-sm font-semibold text-black hover:bg-zinc-200">
           Apply
         </button>
       </form>
@@ -106,6 +107,22 @@ export default async function AdminEventsPage({ searchParams }: PageProps) {
       ) : null}
 
       <div className="mt-4">
+        <div className="mb-3 md:hidden">
+          <Pagination
+            total={data.total}
+            page={filters.page}
+            pageSize={filters.pageSize}
+            basePath="/admin/events"
+            searchParams={{
+              userId: filters.userId,
+              actionName: filters.actionName,
+              chatType: filters.chatType,
+              from: filters.from,
+              to: filters.to,
+              pageSize: filters.pageSize,
+            }}
+          />
+        </div>
         <DataTable
           columns={["ID", "User", "Chat", "Action", "Created"]}
           rows={data.rows.map((event) => [

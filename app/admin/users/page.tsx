@@ -174,6 +174,23 @@ export default async function AdminUsersPage({ searchParams }: PageProps) {
       ) : null}
 
       <div className="mt-4">
+        <div className="mb-3 md:hidden">
+          <Pagination
+            total={data.total}
+            page={filters.page}
+            pageSize={filters.pageSize}
+            basePath="/admin/users"
+            searchParams={{
+              search: filters.search,
+              chatType: filters.chatType,
+              language: filters.language,
+              status: filters.status,
+              pageSize: filters.pageSize,
+              sort: filters.sort,
+              direction: filters.direction,
+            }}
+          />
+        </div>
         <DataTable
           columns={[
             sortableColumn(filters, "userId", "User ID"),

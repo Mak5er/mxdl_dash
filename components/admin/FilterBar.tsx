@@ -24,19 +24,19 @@ export function FilterBar({
   searchPlaceholder = "search",
 }: FilterBarProps) {
   return (
-    <form className="grid gap-3 border border-white/10 bg-zinc-950 p-4 md:grid-cols-4">
+    <form className="grid gap-3 border border-white/10 bg-zinc-950 p-4 sm:grid-cols-2 lg:grid-cols-5">
       <input
         name={searchName}
         defaultValue={searchValue}
         placeholder={searchPlaceholder}
-        className="border border-white/10 bg-black px-3 py-2 text-sm text-white outline-none placeholder:text-zinc-700 focus:border-white/40"
+        className="min-h-11 w-full border border-white/10 bg-black px-3 py-2 text-base text-white outline-none placeholder:text-zinc-700 focus:border-white/40 sm:text-sm"
       />
       {options.map((option) => (
         <select
           key={option.name}
           name={option.name}
           defaultValue={option.value ?? ""}
-          className="border border-white/10 bg-black px-3 py-2 text-sm text-white outline-none focus:border-white/40"
+          className="min-h-11 w-full border border-white/10 bg-black px-3 py-2 text-base text-white outline-none focus:border-white/40 sm:text-sm"
         >
           <option value="">{option.label}</option>
           {option.items.map((item) => (
@@ -47,10 +47,9 @@ export function FilterBar({
         </select>
       ))}
       {children}
-      <button className="border border-white bg-white px-3 py-2 text-sm font-semibold text-black hover:bg-zinc-200">
+      <button className="min-h-11 border border-white bg-white px-3 py-2 text-sm font-semibold text-black hover:bg-zinc-200">
         Apply
       </button>
     </form>
   );
 }
-

@@ -13,7 +13,7 @@ export function LogoutButton() {
       type="button"
       title="Logout"
       aria-label="Logout"
-      className="inline-flex h-9 w-9 items-center justify-center border border-white/10 text-zinc-400 hover:border-white/30 hover:text-white disabled:opacity-60"
+      className="inline-flex h-11 w-11 items-center justify-center border border-white/10 text-zinc-400 hover:border-white/30 hover:text-white disabled:opacity-60"
       disabled={loading}
       onClick={async () => {
         setLoading(true);
@@ -26,4 +26,3 @@ export function LogoutButton() {
     </button>
   );
 }
-

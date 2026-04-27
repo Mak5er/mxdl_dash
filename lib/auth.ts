@@ -14,14 +14,28 @@ type SessionPayload = {
   nonce: string;
 };
 
-function getAdminToken() {
-  const token = process.env.ADMIN_TOKEN;
+function getAdminTokenHash() {
+  const tokenHash = process.env.ADMIN_TOKEN_HASH;
 
-  if (!token) {
-    throw new Error("ADMIN_TOKEN is not configured.");
+  if (!tokenHash) {
+    throw new Error("ADMIN_TOKEN_HASH is not configured.");
   }
 
-  return token;
+  return tokenHash;
+}
+
+function getAdminSessionSecret() {
+  const secret = process.env.ADMIN_SESSION_SECRET;
+
+  if (!secret) {
+    throw new Error("ADMIN_SESSION_SECRET is not configured.");
+  }
+
+  return secret;
+}
+
+function hashAdminToken(token: string) {
+  return crypto.createHash("sha256").update(token).digest("hex");
 }
 
 function encodePayload(payload: SessionPayload) {
@@ -42,7 +56,7 @@ function decodePayload(value: string) {
 }
 
 export function verifyAdminToken(token: string) {
-  return constantTimeCompare(token, getAdminToken());
+  return constantTimeCompare(hashAdminToken(token), getAdminTokenHash());
 }
 
 export function createSessionValue(now = Date.now()) {
@@ -51,7 +65,7 @@ export function createSessionValue(now = Date.now()) {
     iat: now,
     nonce: crypto.randomUUID(),
   });
-  const signature = createHmacSignature(payload, getAdminToken());
+  const signature = createHmacSignature(payload, getAdminSessionSecret());
   return `${payload}.${signature}`;
 }
 
@@ -65,7 +79,7 @@ export function verifySessionValue(value: string | undefined) {
     return false;
   }
 
-  const expected = createHmacSignature(payload, getAdminToken());
+  const expected = createHmacSignature(payload, getAdminSessionSecret());
   if (!constantTimeCompare(signature, expected)) {
     return false;
   }

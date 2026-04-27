@@ -14,7 +14,7 @@ operating the service.
   human-friendly copy.
 - SEO-ready public surface with canonical metadata, Open Graph/Twitter cards,
   JSON-LD, sitemap, robots rules, web manifest, and `llms.txt`.
-- Private `/admin` console protected by `ADMIN_TOKEN` and a signed HTTP-only
+- Private `/admin` console protected by `ADMIN_TOKEN_HASH` and a signed HTTP-only
   session cookie.
 - Admin views for users, downloads, analytics events, and individual user
   details.
@@ -76,7 +76,8 @@ Create `.env` from `.env.example` and fill in real values:
 DATABASE_URL="postgresql://user:password@host:5432/database"
 DASHBOARD_PUBLIC_URL="https://dashboard.example.com"
 
-ADMIN_TOKEN="change-this-to-a-very-long-random-secret"
+ADMIN_TOKEN_HASH=
+ADMIN_SESSION_SECRET=
 TELEGRAM_BOT_TOKEN="123456:telegram-bot-token"
 
 PUBLIC_DASHBOARD_CACHE_TTL_SECONDS=20
@@ -94,10 +95,10 @@ DATABASE_STATEMENT_TIMEOUT_MS=15000
 DATABASE_IDLE_TRANSACTION_TIMEOUT_MS=15000
 ```
 
-Generate a strong admin token:
+Generate a strong admin token, store its SHA-256 hash, and generate a separate session secret:
 
 ```bash
-openssl rand -hex 64
+node -e "const crypto=require('crypto'); const token=crypto.randomBytes(48).toString('hex'); console.log('token:', token); console.log('ADMIN_TOKEN_HASH='+crypto.createHash('sha256').update(token).digest('hex')); console.log('ADMIN_SESSION_SECRET='+crypto.randomBytes(48).toString('hex'))"
 ```
 
 For Neon or other managed PostgreSQL providers, keep SSL options in the URL:
@@ -176,7 +177,7 @@ For a tunnel or reverse-proxy setup:
 2. Point the public hostname at that port.
 3. Set `DASHBOARD_PUBLIC_URL` to the public hostname.
 4. Keep TLS at the proxy or tunnel edge.
-5. Use a long random `ADMIN_TOKEN`.
+5. Use a long random admin token, store only `ADMIN_TOKEN_HASH`, and keep `ADMIN_SESSION_SECRET` separate.
 
 ## Project Assets
 

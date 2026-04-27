@@ -53,13 +53,14 @@ export function RefreshControl({ intervalSeconds }: RefreshControlProps) {
       <button
         type="button"
         onClick={handleRefresh}
-        className="inline-flex h-8 items-center gap-1.5 border border-white/10 bg-zinc-950/70 px-2.5 text-xs font-medium text-zinc-200 transition hover:border-white/30 hover:bg-white hover:text-black"
+        className="inline-flex h-11 w-11 items-center justify-center gap-1.5 border border-white/10 bg-zinc-950/70 px-0 text-sm font-medium text-zinc-200 transition hover:border-white/30 hover:bg-white hover:text-black min-[420px]:w-auto min-[420px]:px-3"
         title="Refresh data"
+        aria-label="Refresh data"
       >
         <RefreshCw className={clsx("h-3.5 w-3.5", isPending && "animate-spin")} />
-        <span>Refresh</span>
+        <span className="hidden min-[420px]:inline">Refresh</span>
       </button>
-      <span className="hidden h-8 items-center border-y border-r border-white/10 bg-black/70 px-2 font-mono text-[10px] uppercase tracking-[0.12em] text-zinc-500 sm:inline-flex">
+      <span className="inline-flex h-11 items-center border-y border-r border-white/10 bg-black/70 px-2 font-mono text-[10px] uppercase tracking-[0.12em] text-zinc-500">
         {intervalSeconds > 0 ? `${secondsUntilRefresh}s` : "off"}
       </span>
     </div>

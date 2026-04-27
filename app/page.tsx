@@ -10,11 +10,12 @@ import {
   ShieldCheck,
 } from "lucide-react";
 import { ChartCard } from "@/components/ui/ChartCard";
+import { CountUpValue } from "@/components/ui/Motion";
 import { MetricCard } from "@/components/ui/MetricCard";
 import { StatusPill } from "@/components/ui/StatusPill";
 import { BarMetricChart, DonutMetricChart, LineMetricChart } from "@/components/dashboard/Charts";
 import { PublicShell } from "@/components/dashboard/PublicShell";
-import { formatActionLabel, formatNumber } from "@/lib/format";
+import { formatActionLabel } from "@/lib/format";
 import { getPublicStats } from "@/lib/queries/public-stats";
 import {
   botHandle,
@@ -284,7 +285,7 @@ export default async function PublicDashboardPage() {
             </p>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
               <a
-                className="inline-flex w-full items-center justify-center gap-2 bg-[#229ED9] px-6 py-3 text-sm font-semibold text-black shadow-[0_0_0_1px_rgba(34,158,217,0.4)] transition hover:bg-white sm:w-auto"
+                className="inline-flex min-h-11 w-full items-center justify-center gap-2 bg-[#229ED9] px-6 py-3 text-sm font-semibold text-black shadow-[0_0_0_1px_rgba(34,158,217,0.4)] transition hover:bg-white sm:w-auto"
                 href={botUrl}
                 target="_blank"
                 rel="noreferrer"
@@ -293,7 +294,7 @@ export default async function PublicDashboardPage() {
                 <ArrowUpRight className="h-4 w-4" />
               </a>
               <a
-                className="inline-flex w-full items-center justify-center gap-2 border border-white/15 px-5 py-3 text-sm font-semibold text-white transition hover:border-white/40 hover:bg-white hover:text-black sm:w-auto"
+                className="inline-flex min-h-11 w-full items-center justify-center gap-2 border border-white/15 px-5 py-3 text-sm font-semibold text-white transition hover:border-white/40 hover:bg-white hover:text-black sm:w-auto"
                 href="#live-stats"
               >
                 View live stats
@@ -322,41 +323,41 @@ export default async function PublicDashboardPage() {
             </div>
           </div>
 
-          <div className="self-end border border-white/10 bg-black/70 p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.08)] backdrop-blur sm:p-5">
-            <div className="flex flex-col items-start justify-between gap-4 sm:flex-row">
+          <div className="self-end border border-white/10 bg-black/80 p-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.08)] backdrop-blur sm:p-5">
+            <div className="flex items-start justify-between gap-4">
               <div>
-                <div className="font-mono text-[11px] uppercase tracking-[0.18em] text-zinc-500">
+                <div className="font-mono text-xs uppercase tracking-[0.18em] text-zinc-500">
                   bot status
                 </div>
-                <div className="mt-2 text-xl font-semibold text-white sm:text-2xl">
+                <div className="mt-2 text-2xl font-semibold text-white sm:text-2xl">
                   {error ? "Telemetry offline" : "Operational"}
                 </div>
               </div>
               <StatusPill tone={error ? "warn" : "ok"}>{error ? "Check DB" : "Live"}</StatusPill>
             </div>
-            <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-3 sm:gap-3">
-              <div>
-                <div className="font-mono text-[10px] uppercase tracking-[0.14em] text-zinc-600">
+            <div className="mt-6 grid grid-cols-3 gap-3 border-t border-white/10 pt-5">
+              <div className="min-w-0">
+                <div className="font-mono text-[10px] uppercase tracking-[0.14em] text-zinc-500">
                   downloads
                 </div>
                 <div className="mt-2 text-xl font-semibold text-white sm:text-2xl">
-                  {formatNumber(stats?.totals.downloads)}
+                  <CountUpValue value={stats?.totals.downloads} />
                 </div>
               </div>
-              <div>
-                <div className="font-mono text-[10px] uppercase tracking-[0.14em] text-zinc-600">
+              <div className="min-w-0">
+                <div className="font-mono text-[10px] uppercase tracking-[0.14em] text-zinc-500">
                   users
                 </div>
                 <div className="mt-2 text-xl font-semibold text-white sm:text-2xl">
-                  {formatNumber(stats?.totals.users)}
+                  <CountUpValue value={stats?.totals.users} />
                 </div>
               </div>
-              <div>
-                <div className="font-mono text-[10px] uppercase tracking-[0.14em] text-zinc-600">
+              <div className="min-w-0">
+                <div className="font-mono text-[10px] uppercase tracking-[0.14em] text-zinc-500">
                   events
                 </div>
                 <div className="mt-2 text-xl font-semibold text-white sm:text-2xl">
-                  {formatNumber(stats?.totals.events)}
+                  <CountUpValue value={stats?.totals.events} />
                 </div>
               </div>
             </div>
@@ -433,9 +434,9 @@ export default async function PublicDashboardPage() {
         </div>
 
         <section className="mb-8 grid gap-4 md:grid-cols-3">
-          <MetricCard label="Total downloads" value={formatNumber(stats?.totals.downloads)} />
-          <MetricCard label="Total users" value={formatNumber(stats?.totals.users)} />
-          <MetricCard label="Analytics events" value={formatNumber(stats?.totals.events)} />
+          <MetricCard label="Total downloads" value={stats?.totals.downloads ?? "Not available"} />
+          <MetricCard label="Total users" value={stats?.totals.users ?? "Not available"} />
+          <MetricCard label="Analytics events" value={stats?.totals.events ?? "Not available"} />
         </section>
 
         <section className="grid gap-4 lg:grid-cols-2">
@@ -486,7 +487,7 @@ export default async function PublicDashboardPage() {
           </p>
           <div className="mt-5 flex flex-col gap-3 sm:flex-row">
             <a
-              className="inline-flex items-center justify-center gap-2 bg-white px-4 py-2 text-sm font-semibold text-black hover:bg-[#229ED9]"
+              className="inline-flex min-h-11 items-center justify-center gap-2 bg-white px-4 py-2 text-sm font-semibold text-black hover:bg-[#229ED9]"
               href={supportUrl}
               target="_blank"
               rel="noreferrer"
@@ -495,7 +496,7 @@ export default async function PublicDashboardPage() {
               <ArrowUpRight className="h-4 w-4" />
             </a>
             <a
-              className="inline-flex items-center justify-center gap-2 border border-white/15 px-4 py-2 text-sm font-semibold text-white hover:border-white/40 hover:bg-white hover:text-black"
+              className="inline-flex min-h-11 items-center justify-center gap-2 border border-white/15 px-4 py-2 text-sm font-semibold text-white hover:border-white/40 hover:bg-white hover:text-black"
               href={githubIssuesUrl}
               target="_blank"
               rel="noreferrer"
@@ -519,7 +520,7 @@ export default async function PublicDashboardPage() {
           </div>
           <div className="flex flex-wrap gap-2">
             <a
-              className="inline-flex w-full items-center justify-center gap-2 bg-[#229ED9] px-4 py-2 font-semibold text-black hover:bg-white sm:w-auto"
+              className="inline-flex min-h-11 w-full items-center justify-center gap-2 bg-[#229ED9] px-4 py-2 font-semibold text-black hover:bg-white sm:w-auto"
               href={botUrl}
               target="_blank"
               rel="noreferrer"

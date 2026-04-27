@@ -47,7 +47,7 @@ export function SendMessageForm({ userId }: SendMessageFormProps) {
         }}
       >
         <textarea
-          className="min-h-32 w-full resize-y border border-white/10 bg-black px-3 py-3 text-sm text-white outline-none placeholder:text-zinc-700 focus:border-white/40"
+          className="min-h-32 w-full resize-y border border-white/10 bg-black px-3 py-3 text-base text-white outline-none placeholder:text-zinc-700 focus:border-white/40 sm:text-sm"
           value={message}
           onChange={(event) => setMessage(event.target.value)}
           maxLength={1500}
@@ -59,7 +59,7 @@ export function SendMessageForm({ userId }: SendMessageFormProps) {
           <button
             type="submit"
             disabled={loading || !message.trim()}
-            className="inline-flex items-center gap-2 border border-white bg-white px-3 py-2 text-sm font-semibold text-black hover:bg-zinc-200 disabled:cursor-not-allowed disabled:opacity-60"
+            className="inline-flex min-h-11 items-center gap-2 border border-white bg-white px-3 py-2 text-sm font-semibold text-black hover:bg-zinc-200 disabled:cursor-not-allowed disabled:opacity-60"
           >
             <Send className="h-4 w-4" />
             {loading ? "Sending" : "Send"}
@@ -90,7 +90,7 @@ export function SendMessageForm({ userId }: SendMessageFormProps) {
               </div>
               <button
                 type="button"
-                className="inline-flex h-8 w-8 items-center justify-center border border-white/10 text-zinc-500 hover:border-white/30 hover:text-white"
+                className="inline-flex h-11 w-11 items-center justify-center border border-white/10 text-zinc-500 hover:border-white/30 hover:text-white"
                 onClick={() => setConfirmOpen(false)}
                 aria-label="Close confirmation"
               >
@@ -105,14 +105,14 @@ export function SendMessageForm({ userId }: SendMessageFormProps) {
             <div className="mt-5 flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
               <button
                 type="button"
-                className="border border-white/10 px-4 py-2 text-sm font-semibold text-zinc-300 hover:border-white/30 hover:text-white"
+                className="min-h-11 border border-white/10 px-4 py-2 text-sm font-semibold text-zinc-300 hover:border-white/30 hover:text-white"
                 onClick={() => setConfirmOpen(false)}
               >
                 Cancel
               </button>
               <button
                 type="button"
-                className="inline-flex items-center justify-center gap-2 border border-[#229ED9] bg-[#229ED9] px-4 py-2 text-sm font-semibold text-black hover:border-white hover:bg-white disabled:cursor-not-allowed disabled:opacity-60"
+                className="inline-flex min-h-11 items-center justify-center gap-2 border border-[#229ED9] bg-[#229ED9] px-4 py-2 text-sm font-semibold text-black hover:border-white hover:bg-white disabled:cursor-not-allowed disabled:opacity-60"
                 onClick={sendMessage}
                 disabled={loading}
               >

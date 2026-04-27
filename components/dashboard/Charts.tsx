@@ -1,6 +1,6 @@
 "use client";
 
-import { useId, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 import { formatChartDateLabel } from "@/lib/format";
 
 type Point = {
@@ -27,6 +27,92 @@ function getMax(data: Point[]) {
   return Math.max(1, ...data.map((point) => point.count));
 }
 
+function useRevealOnce() {
+  const ref = useRef<HTMLDivElement>(null);
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    const node = ref.current;
+    if (!node) {
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setVisible(true);
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.28 },
+    );
+
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, []);
+
+  return { ref, visible };
+}
+
+function useCountUp(value: number, active: boolean, delay = 0) {
+  const displayValueRef = useRef(0);
+  const [displayValue, setDisplayValue] = useState(0);
+
+  useEffect(() => {
+    if (!active) {
+      return;
+    }
+
+    const duration = 1300;
+    let frame = 0;
+    const timeout = window.setTimeout(() => {
+      const startValue = displayValueRef.current;
+      const delta = value - startValue;
+      const start = performance.now();
+
+      const tick = (now: number) => {
+        const progress = Math.min(1, (now - start) / duration);
+        const eased = 1 - Math.pow(1 - progress, 3);
+        const nextValue = Math.round(startValue + delta * eased);
+        displayValueRef.current = nextValue;
+        setDisplayValue(nextValue);
+
+        if (progress < 1) {
+          frame = requestAnimationFrame(tick);
+        } else {
+          displayValueRef.current = value;
+          setDisplayValue(value);
+        }
+      };
+
+      frame = requestAnimationFrame(tick);
+    }, delay);
+
+    return () => {
+      window.clearTimeout(timeout);
+      cancelAnimationFrame(frame);
+    };
+  }, [active, delay, value]);
+
+  return displayValue;
+}
+
+function AnimatedCompactNumber({
+  value,
+  active,
+  delay = 0,
+  className,
+}: {
+  value: number;
+  active: boolean;
+  delay?: number;
+  className?: string;
+}) {
+  const displayValue = useCountUp(value, active, delay);
+
+  return <span className={className}>{compactNumber.format(active ? displayValue : 0)}</span>;
+}
+
 export function LineMetricChart({ data }: { data: Point[] }) {
   const gradientId = useId();
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
@@ -36,8 +122,8 @@ export function LineMetricChart({ data }: { data: Point[] }) {
   }
 
   const width = 720;
-  const height = 256;
-  const padding = { top: 18, right: 18, bottom: 42, left: 48 };
+  const height = 232;
+  const padding = { top: 14, right: 18, bottom: 34, left: 52 };
   const plotWidth = width - padding.left - padding.right;
   const plotHeight = height - padding.top - padding.bottom;
   const max = getMax(data);
@@ -72,7 +158,7 @@ export function LineMetricChart({ data }: { data: Point[] }) {
 
   return (
     <svg
-      className="h-56 w-full overflow-visible sm:h-64"
+      className="h-56 w-full overflow-visible sm:h-60"
       viewBox={`0 0 ${width} ${height}`}
       role="img"
       aria-label="Line chart"
@@ -84,18 +170,18 @@ export function LineMetricChart({ data }: { data: Point[] }) {
 
         return (
           <g key={step}>
-            <line x1={padding.left} x2={width - padding.right} y1={y} y2={y} stroke="rgba(255,255,255,0.08)" />
-            <text x={padding.left - 10} y={y + 4} textAnchor="end" className="fill-zinc-600 text-[11px]">
+            <line x1={padding.left} x2={width - padding.right} y1={y} y2={y} stroke="rgba(255,255,255,0.14)" />
+            <text x={padding.left - 10} y={y + 4} textAnchor="end" className="fill-zinc-300 text-base sm:text-sm">
               {compactNumber.format(Math.round(max * step))}
             </text>
           </g>
         );
       })}
       <path d={areaPath} fill={`url(#${gradientId})`} />
-      <path d={linePath} fill="none" stroke="#ffffff" strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" />
+      <path d={linePath} fill="none" stroke="#ffffff" strokeLinecap="round" strokeLinejoin="round" strokeWidth="3.5" />
       {points.length === 1 ? <circle cx={points[0].x} cy={points[0].y} r="4" fill="#229ED9" /> : null}
       {xLabels.map((point) => (
-        <text key={`${point.label}-${point.x}`} x={point.x} y={height - 14} textAnchor="middle" className="fill-zinc-500 text-[11px]">
+        <text key={`${point.label}-${point.x}`} x={point.x} y={height - 10} textAnchor="middle" className="fill-zinc-300 text-base sm:text-sm">
           {formatChartDateLabel(point.label)}
         </text>
       ))}
@@ -124,16 +210,16 @@ export function LineMetricChart({ data }: { data: Point[] }) {
             x2={activePoint.x}
             y1={padding.top}
             y2={padding.top + plotHeight}
-            stroke="rgba(34,158,217,0.55)"
+            stroke="rgba(34,158,217,0.8)"
             strokeDasharray="4 5"
           />
           <circle cx={activePoint.x} cy={activePoint.y} r="5" fill="#229ED9" stroke="#ffffff" strokeWidth="2" />
           <g transform={`translate(${tooltipX} ${tooltipY})`}>
             <rect width={tooltipWidth} height={tooltipHeight} fill="#050505" stroke="rgba(255,255,255,0.18)" />
-            <text x="12" y="21" className="fill-zinc-400 text-[11px]">
+            <text x="12" y="21" className="fill-zinc-400 text-xs">
               {formatChartDateLabel(activePoint.label)}
             </text>
-            <text x="12" y="41" className="fill-white text-[16px] font-semibold">
+            <text x="12" y="41" className="fill-white text-lg font-semibold">
               {activePoint.count.toLocaleString("en")}
             </text>
           </g>
@@ -141,8 +227,8 @@ export function LineMetricChart({ data }: { data: Point[] }) {
       ) : null}
       <defs>
         <linearGradient id={gradientId} x1="0" x2="0" y1="0" y2="1">
-          <stop offset="0%" stopColor="#229ED9" stopOpacity="0.34" />
-          <stop offset="100%" stopColor="#229ED9" stopOpacity="0" />
+          <stop offset="0%" stopColor="#229ED9" stopOpacity="0.55" />
+          <stop offset="100%" stopColor="#229ED9" stopOpacity="0.08" />
         </linearGradient>
       </defs>
     </svg>
@@ -150,6 +236,8 @@ export function LineMetricChart({ data }: { data: Point[] }) {
 }
 
 export function BarMetricChart({ data }: { data: Point[] }) {
+  const { ref, visible } = useRevealOnce();
+
   if (!data.length) {
     return <EmptyChart />;
   }
@@ -158,25 +246,31 @@ export function BarMetricChart({ data }: { data: Point[] }) {
   const max = getMax(rows);
 
   return (
-    <div className="flex h-56 flex-col justify-center gap-3 sm:h-64">
+    <div ref={ref} className="flex min-h-72 flex-col justify-center gap-4 sm:min-h-64">
       {rows.map((point, index) => (
         <div
           key={point.label}
-          className="grid grid-cols-[minmax(4.5rem,7rem)_1fr_3rem] items-center gap-2 sm:grid-cols-[minmax(6rem,11rem)_1fr_3.5rem] sm:gap-3"
+          className="grid grid-cols-[minmax(7rem,8.5rem)_minmax(0,1fr)_3.5rem] items-center gap-2 sm:grid-cols-[minmax(6rem,11rem)_1fr_3.5rem] sm:gap-3"
         >
-          <div className="truncate font-mono text-[11px] uppercase tracking-[0.12em] text-zinc-500" title={point.label}>
-            {shortLabel(point.label)}
+          <div className="truncate font-mono text-xs uppercase tracking-[0.12em] text-zinc-400" title={point.label}>
+            {shortLabel(point.label, 16)}
           </div>
-          <div className="h-6 border border-white/10 bg-zinc-950">
+          <div className="h-6 border border-white/15 bg-zinc-950">
             <div
-              className="h-full bg-white"
+              className="h-full origin-left bg-white transition-[width] duration-1000 ease-out"
               style={{
-                width: `${Math.max(3, (point.count / max) * 100)}%`,
+                width: visible ? `${Math.max(3, (point.count / max) * 100)}%` : "0%",
                 backgroundColor: chartColors[index % chartColors.length],
+                transitionDelay: `${index * 100}ms`,
               }}
             />
           </div>
-          <div className="text-right font-mono text-xs text-zinc-400">{compactNumber.format(point.count)}</div>
+          <AnimatedCompactNumber
+            value={point.count}
+            active={visible}
+            delay={index * 100}
+            className="text-right font-mono text-sm text-zinc-300"
+          />
         </div>
       ))}
     </div>
@@ -184,14 +278,19 @@ export function BarMetricChart({ data }: { data: Point[] }) {
 }
 
 export function DonutMetricChart({ data }: { data: Point[] }) {
+  const { ref, visible } = useRevealOnce();
+  const maskId = useId();
+  const rows = data.slice(0, 6);
+  const total = rows.reduce((sum, point) => sum + point.count, 0);
+  const animatedTotal = useCountUp(total, visible);
+
   if (!data.length) {
     return <EmptyChart />;
   }
 
-  const rows = data.slice(0, 6);
-  const total = rows.reduce((sum, point) => sum + point.count, 0);
   const radius = 74;
   const circumference = 2 * Math.PI * radius;
+  const revealDuration = 1400;
 
   if (total <= 0) {
     return <EmptyChart />;
@@ -207,40 +306,73 @@ export function DonutMetricChart({ data }: { data: Point[] }) {
   });
 
   return (
-    <div className="grid h-56 min-w-0 items-center gap-4 sm:h-64 sm:grid-cols-[15rem_1fr]">
-      <svg className="mx-auto h-44 w-44 sm:h-56 sm:w-56" viewBox="0 0 200 200" role="img" aria-label="Donut chart">
-        <circle cx="100" cy="100" r={radius} fill="none" stroke="rgba(255,255,255,0.08)" strokeWidth="24" />
-        {segments.map((point, index) => {
-          return (
+    <div ref={ref} className="grid min-h-72 min-w-0 items-center gap-5 sm:min-h-64 sm:grid-cols-[15rem_1fr]">
+      <svg
+        className="mx-auto h-52 w-52 sm:h-56 sm:w-56"
+        viewBox="0 0 200 200"
+        role="img"
+        aria-label="Donut chart"
+      >
+        <defs>
+          <mask id={maskId}>
+            <rect width="200" height="200" fill="black" />
             <circle
-              key={point.label}
               cx="100"
               cy="100"
               r={radius}
               fill="none"
-              stroke={chartColors[index % chartColors.length]}
-              strokeDasharray={`${Math.max(0, point.dash - 2)} ${circumference}`}
-              strokeDashoffset={-point.offset}
-              strokeWidth="24"
+              stroke="white"
+              strokeDasharray={`${circumference} ${circumference}`}
+              strokeDashoffset={visible ? 0 : circumference}
+              strokeWidth="32"
               transform="rotate(-90 100 100)"
+              className="transition-[stroke-dashoffset] ease-out"
+              style={{ transitionDuration: `${revealDuration}ms` }}
             />
-          );
-        })}
+          </mask>
+        </defs>
+        <circle cx="100" cy="100" r={radius} fill="none" stroke="rgba(255,255,255,0.14)" strokeWidth="26" />
+        <g
+          mask={`url(#${maskId})`}
+          className={visible ? "origin-center [animation:donut-spin-in_1300ms_cubic-bezier(.2,.8,.2,1)_forwards]" : "opacity-0"}
+        >
+          {segments.map((point, index) => {
+            return (
+              <circle
+                key={point.label}
+                cx="100"
+                cy="100"
+                r={radius}
+                fill="none"
+                stroke={chartColors[index % chartColors.length]}
+                strokeDasharray={`${point.dash} ${circumference}`}
+                strokeDashoffset={-point.offset}
+                strokeWidth="26"
+                transform="rotate(-90 100 100)"
+              />
+            );
+          })}
+        </g>
         <text x="100" y="96" textAnchor="middle" className="fill-white text-2xl font-semibold">
-          {compactNumber.format(total)}
+          {compactNumber.format(animatedTotal)}
         </text>
-        <text x="100" y="117" textAnchor="middle" className="fill-zinc-500 text-[11px] uppercase tracking-[0.12em]">
+        <text x="100" y="117" textAnchor="middle" className="fill-zinc-500 text-xs uppercase tracking-[0.12em]">
           total
         </text>
       </svg>
-      <div className="min-w-0 space-y-3">
+      <div className="min-w-0 space-y-4">
         {rows.map((point, index) => (
-          <div key={point.label} className="grid grid-cols-[0.75rem_1fr_auto] items-center gap-3 text-sm">
-            <span className="h-3 w-3" style={{ backgroundColor: chartColors[index % chartColors.length] }} />
-            <span className="truncate text-zinc-400" title={point.label}>
+          <div key={point.label} className="grid grid-cols-[0.85rem_minmax(0,1fr)_auto] items-center gap-3 text-base sm:text-sm">
+            <span className="h-3.5 w-3.5" style={{ backgroundColor: chartColors[index % chartColors.length] }} />
+            <span className="truncate text-zinc-300" title={point.label}>
               {point.label}
             </span>
-            <span className="font-mono text-xs text-zinc-500">{compactNumber.format(point.count)}</span>
+            <AnimatedCompactNumber
+              value={point.count}
+              active={visible}
+              delay={(segments[index].offset / circumference) * revealDuration}
+              className="font-mono text-sm text-zinc-400"
+            />
           </div>
         ))}
       </div>

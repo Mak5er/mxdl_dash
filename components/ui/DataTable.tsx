@@ -19,6 +19,16 @@ function columnHeader(column: string | DataTableColumn) {
   return typeof column === "string" ? column : column.header;
 }
 
+function mobileLabel(column: string | DataTableColumn) {
+  if (typeof column === "string") {
+    return column;
+  }
+
+  return column.key
+    .replace(/([a-z])([A-Z])/g, "$1 $2")
+    .replace(/\b\w/g, (letter) => letter.toUpperCase());
+}
+
 export function DataTable({
   columns,
   rows,
@@ -26,8 +36,44 @@ export function DataTable({
 }: DataTableProps) {
   return (
     <div className="min-w-0 overflow-hidden border border-white/10 bg-black">
-      <div className="overflow-x-auto [-webkit-overflow-scrolling:touch]">
-        <table className="w-full min-w-[640px] text-left text-sm sm:min-w-[760px]">
+      <div className="md:hidden">
+        {rows.length ? (
+          <div className="divide-y divide-white/10">
+            {rows.map((row, rowIndex) => (
+              <article key={rowIndex} className="space-y-3 p-3">
+                <div className="min-w-0">
+                  <div className="font-mono text-[11px] uppercase tracking-[0.16em] text-zinc-500">
+                    {mobileLabel(columns[0])}
+                  </div>
+                  <div className="mt-1.5 min-w-0 break-words text-base font-semibold text-white">
+                    {row[0]}
+                  </div>
+                </div>
+                <dl className="grid gap-2">
+                  {row.slice(1).map((cell, cellIndex) => (
+                    <div
+                      key={`${rowIndex}-${cellIndex}`}
+                      className="grid min-w-0 grid-cols-[5.75rem_minmax(0,1fr)] items-start gap-2"
+                    >
+                      <dt className="font-mono text-[10px] uppercase tracking-[0.12em] text-zinc-600">
+                        {mobileLabel(columns[cellIndex + 1])}
+                      </dt>
+                      <dd className="min-w-0 break-words text-sm leading-5 text-zinc-300">
+                        {cell}
+                      </dd>
+                    </div>
+                  ))}
+                </dl>
+              </article>
+            ))}
+          </div>
+        ) : (
+          <div className="px-4 py-8 text-center text-zinc-500">{emptyMessage}</div>
+        )}
+      </div>
+
+      <div className="hidden overflow-x-auto [-webkit-overflow-scrolling:touch] md:block">
+        <table className="w-full min-w-[760px] text-left text-sm">
           <thead className="border-b border-white/10 bg-zinc-950 font-mono text-[11px] uppercase tracking-[0.16em] text-zinc-500">
             <tr>
               {columns.map((column, index) => (
