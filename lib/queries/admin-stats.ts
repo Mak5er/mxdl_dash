@@ -31,6 +31,8 @@ type ActiveUserRow = {
 type RecentActivityRow = {
   id: string;
   user_id: string;
+  user_name: string | null;
+  user_username: string | null;
   chat_type: string | null;
   action_name: string;
   created_at: Date;
@@ -110,9 +112,17 @@ async function loadAdminStats() {
       LIMIT 12
     `),
     query<RecentActivityRow>(`
-      SELECT id, user_id, chat_type, action_name, created_at
-      FROM analytics_events
-      ORDER BY created_at DESC
+      SELECT
+        e.id,
+        e.user_id,
+        u.user_name,
+        u.user_username,
+        e.chat_type,
+        e.action_name,
+        e.created_at
+      FROM analytics_events e
+      LEFT JOIN users u ON u.user_id = e.user_id
+      ORDER BY e.created_at DESC
       LIMIT 20
     `),
     query<SeriesRow>(`
@@ -177,6 +187,8 @@ async function loadAdminStats() {
     recentActivity: recentActivityRows.map((row) => ({
       id: toNumber(row.id),
       userId: toNumber(row.user_id),
+      userName: row.user_name,
+      userUsername: row.user_username,
       chatType: row.chat_type,
       actionName: row.action_name,
       createdAt: row.created_at.toISOString(),

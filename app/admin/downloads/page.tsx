@@ -110,20 +110,23 @@ export default async function AdminDownloadsPage({ searchParams }: PageProps) {
           />
         </div>
         <DataTable
-          columns={["ID", "URL", "File ID", "Type", "Added"]}
+          columns={["ID", "Source", "File", "Added"]}
           rows={data.rows.map((download) => [
             <span className="font-mono text-white" key="id">{download.id}</span>,
-            <span className="inline-flex max-w-[34rem] items-center gap-2" key="url">
-              <span className="truncate font-mono text-xs" title={download.url}>
+            <div className="flex max-w-[34rem] min-w-0 items-center gap-2" key="url">
+              <span className="min-w-0 truncate font-mono text-xs" title={download.url}>
                 {truncateMiddle(download.url)}
               </span>
               <CopyButton value={download.url} label="Copy URL" />
-            </span>,
-            <span className="inline-flex items-center gap-2 font-mono text-xs" key="file">
-              {truncateMiddle(download.fileId, 28)}
-              <CopyButton value={download.fileId} label="Copy file ID" />
-            </span>,
-            nullLabel(download.fileType),
+            </div>,
+            <div className="space-y-2" key="file">
+              <div className="font-mono text-xs">
+                {truncateMiddle(download.fileId, 28)}
+              </div>
+              <div className="text-xs uppercase tracking-[0.12em] text-zinc-500">
+                {nullLabel(download.fileType)}
+              </div>
+            </div>,
             formatDateTime(download.dateAdded),
           ])}
         />

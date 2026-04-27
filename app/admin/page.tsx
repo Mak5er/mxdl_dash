@@ -7,7 +7,7 @@ import { ChartCard } from "@/components/ui/ChartCard";
 import { DataTable } from "@/components/ui/DataTable";
 import { MetricCard } from "@/components/ui/MetricCard";
 import { hasAdminSession } from "@/lib/auth";
-import { formatDateTime, formatNumber } from "@/lib/format";
+import { formatActionLabel, formatDateTime, formatNumber, nullLabel } from "@/lib/format";
 import { getAdminStats } from "@/lib/queries/admin-stats";
 
 export const dynamic = "force-dynamic";
@@ -80,10 +80,15 @@ export default async function AdminOverviewPage() {
             columns={["Time", "User", "Action"]}
             rows={(stats?.recentActivity ?? []).map((event) => [
               formatDateTime(event.createdAt),
-              <Link className="text-white hover:underline" href={`/admin/users/${event.userId}`} key="user">
-                {event.userId}
-              </Link>,
-              event.actionName,
+              <div className="space-y-1" key="user">
+                <Link className="font-mono text-white hover:underline" href={`/admin/users/${event.userId}`}>
+                  {event.userId}
+                </Link>
+                <div className="text-xs text-zinc-500">
+                  {event.userUsername ? `@${event.userUsername}` : nullLabel(event.userName)}
+                </div>
+              </div>,
+              <span className="font-mono text-xs" key="action">{formatActionLabel(event.actionName)}</span>,
             ])}
           />
         </ChartCard>

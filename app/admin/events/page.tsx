@@ -5,7 +5,7 @@ import { AdminShell } from "@/components/admin/AdminShell";
 import { DataTable } from "@/components/ui/DataTable";
 import { Pagination } from "@/components/ui/Pagination";
 import { hasAdminSession } from "@/lib/auth";
-import { formatDateTime, nullLabel } from "@/lib/format";
+import { formatActionLabel, formatDateTime, nullLabel } from "@/lib/format";
 import { getEventFilterOptions, listEvents } from "@/lib/queries/events";
 import { coerceSearchParams, eventsFilterSchema } from "@/lib/validators";
 
@@ -19,6 +19,23 @@ export const metadata: Metadata = {
 type PageProps = {
   searchParams?: Promise<Record<string, string | string[] | undefined>>;
 };
+
+function userSummary(event: {
+  userId: number;
+  userName: string | null;
+  userUsername: string | null;
+}) {
+  return (
+    <div className="space-y-1">
+      <Link className="font-mono text-white hover:underline" href={`/admin/users/${event.userId}`}>
+        {event.userId}
+      </Link>
+      <div className="text-xs text-zinc-500">
+        {event.userUsername ? `@${event.userUsername}` : nullLabel(event.userName)}
+      </div>
+    </div>
+  );
+}
 
 export default async function AdminEventsPage({ searchParams }: PageProps) {
   if (!(await hasAdminSession())) {
@@ -127,11 +144,9 @@ export default async function AdminEventsPage({ searchParams }: PageProps) {
           columns={["ID", "User", "Chat", "Action", "Created"]}
           rows={data.rows.map((event) => [
             <span className="font-mono text-white" key="id">{event.id}</span>,
-            <Link className="font-mono text-white hover:underline" href={`/admin/users/${event.userId}`} key="user">
-              {event.userId}
-            </Link>,
+            <div key="user">{userSummary(event)}</div>,
             nullLabel(event.chatType),
-            <span className="font-mono text-xs" key="action">{event.actionName}</span>,
+            <span className="font-mono text-xs" key="action">{formatActionLabel(event.actionName)}</span>,
             formatDateTime(event.createdAt),
           ])}
         />

@@ -9,6 +9,8 @@ export type EventFilters = z.infer<typeof eventsFilterSchema>;
 type EventRow = {
   id: string;
   user_id: string;
+  user_name: string | null;
+  user_username: string | null;
   chat_type: string | null;
   action_name: string;
   created_at: Date;
@@ -28,27 +30,27 @@ function buildEventsWhere(filters: EventFilters) {
 
   if (filters.userId) {
     params.push(filters.userId);
-    clauses.push(`user_id = $${params.length}`);
+    clauses.push(`e.user_id = $${params.length}`);
   }
 
   if (filters.actionName) {
     params.push(filters.actionName);
-    clauses.push(`action_name = $${params.length}`);
+    clauses.push(`e.action_name = $${params.length}`);
   }
 
   if (filters.chatType) {
     params.push(filters.chatType);
-    clauses.push(`chat_type = $${params.length}`);
+    clauses.push(`e.chat_type = $${params.length}`);
   }
 
   if (filters.from) {
     params.push(filters.from);
-    clauses.push(`created_at >= $${params.length}::timestamptz`);
+    clauses.push(`e.created_at >= $${params.length}::timestamptz`);
   }
 
   if (filters.to) {
     params.push(filters.to);
-    clauses.push(`created_at <= $${params.length}::timestamptz`);
+    clauses.push(`e.created_at <= $${params.length}::timestamptz`);
   }
 
   return {
@@ -65,17 +67,25 @@ export async function listEvents(filters: EventFilters) {
   const [rows, countRows] = await Promise.all([
     query<EventRow>(
       `
-        SELECT id, user_id, chat_type, action_name, created_at
-        FROM analytics_events
+        SELECT
+          e.id,
+          e.user_id,
+          u.user_name,
+          u.user_username,
+          e.chat_type,
+          e.action_name,
+          e.created_at
+        FROM analytics_events e
+        LEFT JOIN users u ON u.user_id = e.user_id
         ${where}
-        ORDER BY created_at DESC, id DESC
+        ORDER BY e.created_at DESC, e.id DESC
         LIMIT $${params.length + 1}
         OFFSET $${params.length + 2}
       `,
       rowsParams,
     ),
     query<CountRow>(
-      `SELECT COUNT(*) AS count FROM analytics_events ${where}`,
+      `SELECT COUNT(*) AS count FROM analytics_events e ${where}`,
       params,
     ),
   ]);
@@ -84,6 +94,8 @@ export async function listEvents(filters: EventFilters) {
     rows: rows.map((row) => ({
       id: toNumber(row.id),
       userId: toNumber(row.user_id),
+      userName: row.user_name,
+      userUsername: row.user_username,
       chatType: row.chat_type,
       actionName: row.action_name,
       createdAt: row.created_at.toISOString(),
@@ -115,4 +127,3 @@ export async function getEventFilterOptions() {
     chatTypes: chatTypes.map((row) => row.value),
   };
 }
-
